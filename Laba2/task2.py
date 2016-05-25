@@ -15,11 +15,11 @@ def main():
 
     args = parser.parse_args()
     
-    countFields = 9
+    countFields = 5
     typeFields = "numbers"
     sepFields = '\t'
     sepStr = '\n'
-    countStr = 7445
+    countStr = 8000000
 
     if args.countFields:
         countFields = args.countFields
@@ -43,7 +43,7 @@ def main():
                     f.write(sepFields)    
             f.write(sepStr)
     else:
-i        for i in xrange(countStr):
+        for i in xrange(countStr):
             for j in xrange(countFields):
                 for k in xrange(randrange(1, 10)):
                     field = chr(randrange(0, 255))

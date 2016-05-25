@@ -14,10 +14,8 @@ class MetaClass(type):
     @metoDec
     def __new__(cls, name, bases, attrs):
         newAttr = {}
-
         f = open(cls.path)
         line = f.readline()
-
         while line:
             if '\n' in line:
                 line = line[:-1]
@@ -27,9 +25,16 @@ class MetaClass(type):
         f.close()
         return super(MetaClass, cls).__new__(cls, name, bases, newAttr)
 
-class Ex(object):
-    __metaclass__ = MetaClass("/home/katrin/labs/labs python/storage")
+class Ex1(object):
+    __metaclass__ = MetaClass("/home/katrin/labs/labs python/storage1")
 
-o = Ex()
+class Ex2(object):
+     __metaclass__ = MetaClass("/home/katrin/labs/labs python/storage2")
+   
+o = Ex1()
+a = Ex2()
+
+print o.b
+print a.b
 print o.b
 

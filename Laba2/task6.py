@@ -13,15 +13,21 @@ class MyDefaultDict(dict):
             return self.d[key]
 
     def __setitem__(self, key, item):
-        self.d[key] = item
+        if isinstance(item, str):
+            self.d[key] = "\"" + item + "\""
+        else:
+            self.d[key] = item
         
     def __str__(self):
         s = ['{']
         for i in self.d.keys():
-            s.append(str(i))
+            if isinstance(i, str):
+                s.append("\"" + i + "\"")
+            else:
+                s.append(str(i))
             s.append(": ")
             s.append(str(self.d[i]))
-            s.append(',')
+            s.append(', ')
         if len(s) > 2 :
             del s[-1]
         s.append('}')
@@ -29,6 +35,9 @@ class MyDefaultDict(dict):
 
 def main():
     a = MyDefaultDict()
+    a['a'] = 1
+    a[5] = 'q'
+    print a 
     print a["e"]["q"]
     print a
 

@@ -25,18 +25,20 @@ class sort(object):
         f = open(self.inputFile)
         tfiles = []
         lbuf = []
-
+        cur_size = 0
         while True:
             line = f.readline()
             if line == "":
                 break
             lbuf.append(line)
-            if self.buf_size < sys.getsizeof(lbuf):
+            cur_size += sys.getsizeof(line)
+            if self.buf_size < cur_size:
                 temp = TemporaryFile()
                 lbuf = self.mergesort(lbuf)
                 self.write_into_file(temp, lbuf)
                 tfiles.append(temp)
                 lbuf = []
+                cur_size = 0
         if len(lbuf) != 0:
             temp =  TemporaryFile()
             lbuf = self.mergesort(lbuf)
@@ -48,7 +50,7 @@ class sort(object):
 
     def compare_lines(self, line1, line2):
         line1 = line1.split(self.sepFields)
-        line2 = line2.split(self.sepFields) #todo: если разная длина строк
+        line2 = line2.split(self.sepFields) 
         if self.numeric:
             line1 = map(int, line1)
             line2 = map(int, line2)
@@ -191,9 +193,9 @@ def main():
     numeric = True
     reverse = False
     check = False
-    buf_size = 200
-    input_file = "gen.txt"
-    output_file = "data1.txt"
+    buf_size = 1000000
+    input_file = "gen"
+    output_file = "data1"
 
     if args.line_separator:
         line_sep = args.line_separator
