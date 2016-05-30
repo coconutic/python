@@ -10,59 +10,80 @@ def isType(s):
     else:
         return int
 
-#def mergeList(s):
-    
-def from_json_toList(s):
-    s = s.split(", ")
-    k = []
-    flagList = False
+
+def div(s):
+    ans = []
     temp = []
+    squer = 0
+    curly = 0
+    strl = False
+    last = s[0]
     for i in s:
-        if i[0] == "[":
-            temp.append(i)
-            temp.append(', ')
-            flagList = True
+        if " " == i and "," == last:
             continue
-        if i[-1] == "]":
-            temp.append(i)
-            t = "".join(temp)
-            k.append(from_json_toList(t[1: -1]))
-            flagList = False
-            continue
-        if flagList == False:
-            if isType(i) == str:
-                k.append(str(i[1:-1]))
-                continue
-            else:
-                k.append(int(i))
-                continue
+        if "," == i and curly == 0 and squer == 0 and strl == False:
+            ans.append(''.join(temp))
+            temp = []
+            last = i
+            continue  
         temp.append(i)
-        temp.append(", ")
+        if "[" == i and strl == False:
+            squer += 1
+            continue
+        if "]" == i and strl == False:
+            squer -= 1
+        if "{" == i and strl == False:
+            curly += 1
+        if "}" == i and strl == False:
+            curly -= 1
+        if "\"" == i:
+            if strl == False:
+                strl = True
+            else:
+                strl = False
+    if len(temp) != 0:
+        ans.append(''.join(temp))
+    return ans
+        
+
+def from_json_toList(s):
+    temp = div(s)
+    k = []
+    for i in temp:
+        if i[0] == "[":
+            k.append(from_json_toList(i[1:-1]))
+            continue
+        if i[0] == "{":
+            k.append(from_json_toDict(i[1:-1]))
+            continue
+        if isType(i) == str:
+            k.append(str(i[1:-1]))
+            continue
+        else:
+            k.append(int(i))
+            continue
     return k
 
+
+def check(s):
+    if s[0] == " ":
+        s = s[1:]
+    if s[-1] == " ":
+        s = s[:-1]
+    return s
+
+
 def from_json_toDict(s):
-    s = s.split(", ")
-    k = []
+    s = div(s)
     d = {}
     temp = []
-    count = 0
     for i in s:
-        if "[" in i:
-            flagList = True
-            count += 1
-        if flagList:
-            temp.append(i)
-            if "]" in i:
-                count -= 1
-                if count == 0:
-                    flagList = False
-                    break
-
-    for i in s:
-        k.append(i.split(" : "))
-    for j in k:
+        temp.append(i.split(":"))
+    for j in temp:
         k = j[0]
         v = j[1]
+        k = check(k)
+        v = check(v)
         if isType(v) == dict:
             value = from_json_toDict(v[1:-1])
         elif isType(v) == list:
@@ -91,8 +112,8 @@ def from_json(s):
 def main():
     print from_json('"w"')
     print from_json('1')
-  #  print from_json('{"w" : [1, 2, 3], "q" : {"a" : 1} }')
-    print from_json('{"w" : 1, "1" : 2}')
+    print from_json('{"w" : [1, 2, 3], "q" : 2}')
+    print from_json('["abac[ava", [1, 2, 3] ]')
     print from_json('["er", 3, "43", ["ew", [2, 3, 3]], "e", 4]')
 
 if __name__ == "__main__":
