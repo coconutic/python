@@ -10,7 +10,7 @@ class Crawler(object):
         return page.text
 
     def findURLs(self, u):
-        soup = BeautifulSoup(self.download(u))
+        soup = BeautifulSoup(self.download(u), 'html.parser') #beautiful  HTML
         listOfUrls = []
         for url in soup.find_all('a'):
             listOfUrls.append(url.get('href'))
