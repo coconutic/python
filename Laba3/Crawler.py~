@@ -1,23 +1,47 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -i*-
 
+import sys
 import requests
 import urlparse
+import os.path
+import base64
+
 from threading import Thread
 from Queue import Queue
 from bs4 import BeautifulSoup
 
 class Crawler(object):
 
-    def __init__(self, depth, count, cur_url):
+    def __init__(self, depth, count, cur_url, storage_dir):
         self.url = cur_url
         self.q = Queue()
         self.depth = depth
         self.listOfThreads = []
         self.q.put((self.url, 0))
+        self.path = storage_dir
 
         for i in xrange(count):
             t = Thread(self.todo())
             self.listOfThreads.append(t)
+
+
+
+    def write_into_file(self, u, txt):
+        file_name = os.path.join(self.path, base64.b16encode(u))
+        f = open(file_name, "w")
+        soup = BeautifulSoup(txt, 'html.parser')
+        data = soup.findAll(text=True)
+        for i in data:
+            if i in ["", " ", "\n", "\t"]:
+                continue
+            try:
+                f.write(i) 
+            except Exception:
+                print i
+                print "_------------------------------"
+        f.close()
+        sys.stdout.flush()
+        return
 
     def todo(self):
         while True:
@@ -43,7 +67,10 @@ class Crawler(object):
         return page.text
     
     def findURLs(self, u):
-        soup = BeautifulSoup(self.download(u), 'html.parser') #beautiful  HTML
+        page = self.download(u)
+        self.write_into_file(u, page)
+        print "hea!!!!"
+        soup = BeautifulSoup(page, 'html.parser') #beautiful  HTML
         listOfUrls = []
         for url in soup.find_all('a'):
             listOfUrls.append(self.absolut_url(url.get('href')))
@@ -54,7 +81,6 @@ class Crawler(object):
         link = temp[0]
         depth = temp[1]
         print link
-        print depth
         if depth > self.depth:
             print "CurDepth > inputDepth"
             return
@@ -64,7 +90,7 @@ class Crawler(object):
         
 
 def main():
-    a = Crawler(2, 50, 'http://stackoverflow.com/questions/4019971/how-to-implement-iter-self-for-a-container-object-python')
+    a = Crawler(2, 50, 'http://stackoverflow.com/questions/4019971/how-to-implement-iter-self-for-a-container-object-python', '/home/katrin/database/')
     k = a.downloadPages()
 
 if __name__ == "__main__":
