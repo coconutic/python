@@ -90,7 +90,7 @@ class Crawler(object):
         
 
 def main():
-    a = Crawler(2, 50, 'http://stackoverflow.com/questions/4019971/how-to-implement-iter-self-for-a-container-object-python', '/home/katrin/database/')
+    a = Crawler(1, 50, 'http://stackoverflow.com/questions/4019971/how-to-implement-iter-self-for-a-container-object-python', '/home/katrin/database/')
     k = a.downloadPages()
 
 if __name__ == "__main__":
