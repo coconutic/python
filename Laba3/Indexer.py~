@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from collections import OrderedDict
 import os
 import json
 
@@ -10,18 +11,10 @@ class Indexer(object):
         self.count_doc = 0
 
     def check(self, i):
-        temp = []
-        for j in xrange(3):
-            if "\r" in i:
-                temp.append(i[:i.index("\r")])
-                temp.append(i[i.index("\r") + 1:])
-                i = ''.join(temp)
-            if "\n" in i:
-                i = i[:-1]
-            if "\t" in i:
-                temp.append(i[:i.index("\t")])
-                temp.append(i[i.index("\t") + 1:])
-                i = ''.join(temp)
+        array = [ ',', "\n", "\r", "\"", "\t", '#', ')', '(', '$', '!', '&', '?', ':', ';', '^']
+        for element in array:
+            if element in i:
+                i = i.replace(element, '')
         return i
 
     def add_doc(self, text):
@@ -31,14 +24,28 @@ class Indexer(object):
             if i in ["", " ", "\n", "\t"]:
                 continue
             if i not in self.inverted_index:
-                self.inverted_index[i] = []
-            self.inverted_index[i].append(self.count_doc)
+                self.inverted_index[i] = {}
+            if self.count_doc in self.inverted_index[i].keys():
+                t =  self.inverted_index[i][self.count_doc] 
+                self.inverted_index[i][self.count_doc] += 1
+            else:
+                 self.inverted_index[i][self.count_doc] = 1
+
             
     def store(self, path):
         file_name = os.path.join(path, 'inverted_index')
         f = open(file_name, "w")
-        json.dump(self.inverted_index, f, sort_keys=True, indent=4)
-        
+        self.sort_words()
+        json.dump(self.inverted_index, f, indent=4)
+
+
+    def sort_words(self):
+        for k, v in self.inverted_index.items():
+            newval = OrderedDict(reversed(sorted(v.items(), key=lambda x: x[1])))
+            self.inverted_index[k] = newval
+
+
+
 def start(directory_dir):
     indexer = Indexer()
     for i in os.listdir(directory_dir):

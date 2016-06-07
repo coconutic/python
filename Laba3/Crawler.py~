@@ -32,6 +32,8 @@ class Crawler(object):
         soup = BeautifulSoup(txt, 'html.parser')
         data = soup.get_text()
         for i in data:
+            if i in ["", " ", "\n", "\t"]:
+                continue
             try:
                 f.write(i) 
             except Exception:
