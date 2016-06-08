@@ -52,7 +52,7 @@ def start(directory_dir):
         f = open(os.path.join(directory_dir, i))
         parse_text = f.read().split(" ")
         indexer.add_doc(parse_text)
-    indexer.store()
+    indexer.store(directory_dir)
 
 def main():
     start('/home/katrin/database')
