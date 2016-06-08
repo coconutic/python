@@ -88,7 +88,7 @@ class Crawler(object):
         
 
 def main():
-    a = Crawler(4, 5, 'http://simple.wikipedia.org/', '/home/katrin/database/')
+    a = Crawler(3, 5, 'http://docs.python.org/', '/home/katrin/database/')
     k = a.downloadPages()
 
 if __name__ == "__main__":

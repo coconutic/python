@@ -7,7 +7,7 @@ class Search(object):
     
     def __init__(self, s):
         self.request = s
-        f = open('/home/katrin/inverted_index')
+        f = open('/home/katrin/python/Laba3/inverted_index')
         self.inverted_index = json.loads(f.read())
 
     def clever_merge(self, a):
@@ -42,8 +42,9 @@ class Search(object):
 
 
 def main():
-    w = Search('you love')
-    print w.start()
+    w = Search('how to sort dict')
+    for i in  w.start():
+        print i
 
 if __name__ == "__main__":
     main()

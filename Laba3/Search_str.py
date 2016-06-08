@@ -42,8 +42,9 @@ class Search(object):
 
 
 def main():
-    w = Search('you love')
-    print w.start()
+    w = Search('how to sort dict')
+    for i in  w.start():
+        print i
 
 if __name__ == "__main__":
     main()
