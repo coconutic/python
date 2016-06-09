@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from collections import OrderedDict
+from django.db import transaction
+
 import os
 import base64
 import json
 
-class Indexer(object):
+class Inde(object):
 
     def __init__(self):
         self.count_doc = 0
@@ -21,6 +23,20 @@ class Indexer(object):
                 without.append(c)
 
         return ''.join(without)
+    
+    @transaction.atomic
+    def add_group_index(self, listwords):
+        for word in listwords:
+            index = Indexer(name=word)
+            index.save()
+
+    @transaction.atomic
+    def add_group_files(self, listfiles):
+        for f in listfiles:
+            index = Count_in_file(countWords=f[1], link_id=f[0])
+            index.indexer = f[2]
+            index.save()
+
 
     def add_doc(self, text, filename):
         print str(base64.b16decode(filename))
@@ -40,22 +56,21 @@ class Indexer(object):
             else:
                 text[i] = 1
 
+        temp = []
+        for word in text.keys():
+            query_result = list(Indexer.objects.raw('SELECT * FROM search_indexer WHERE name=%s', [word]))
+            if len(query_result) == 0:
+                temp.append(word)
+        self.add_group_index(temp)
+        
+        lw = []
         for k, v in text.iteritems():
-            print k
-            try:
-                word = db.objects.get(name=str(k))
-            except:
-                in_w = db(name=str(k))
-                in_w.save()
-            finally:
-                word = db.objects.get(name=str(k))
-                word.count_in_file_set.create(countWord=, link_id=self.count_doc)
-                self.count_doc += 1
-                word.save()
+            query_result = list(Indexer.objects.raw('SELECT * FROM search_indexer WHERE name=%s', [k]))
+            lw.append((self.count_doc, v, query_result[0]))
+        self.add_group_files(lw)
 
-            
 def start(directory_dir):
-    indexer = Indexer()
+    indexer = Inde()
     for i in os.listdir(directory_dir):
         f = open(os.path.join(directory_dir, i))
         parse_text = f.read()
@@ -73,6 +88,6 @@ if __name__ == "__main__":
     os.environ['DJANGO_SETTINGS_MODULE']='search_engine.settings'
     django.setup()
 
-    from search.models import Indexer as db
-
+    from search.models import Indexer
+    from search.models import Count_in_file
     main()
