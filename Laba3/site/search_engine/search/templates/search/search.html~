@@ -1,19 +1,39 @@
-<!DOCTYPE HTML> <html>
+<!DOCTYPE HTML>
+<html>
 <head>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+                var jsontext = ''
+                $('#btn').click(function() {
+                    $.ajax({
+                        url: 'search_results', 
+                        type: 'get',
+                        data: {text: $('#in').val()},
+                        success: function(response) {
+                            $('#sheet tr').remove()
+                            for (var i = 0; i < response.urls.length; i++){
+                                $('#sheet').find('tbody:last').append('<tr><td><a href="'+response.urls[i]+'" style="color: 644acb; font-family: Georgia; font-style: italic; font-size: 1.3em; ">'+response.urls[i]+'</a></td></tr>');
+                              
+                            }
+                        }
+                        })
+                    })
+                });
+    </script>
 </head>
     {% load staticfiles %}
     <body style="background-image: url({% static "search/fon.jpg" %}); background-repeat: no-repeat; background-position: center top;"> 
     <div class="center-block" style="margin-top: 280px;">
         <div class="container">
-            <form role="form">
+            <form role="form" action="#" method="get">
                 <div class="form-group">
-                    <p style="color: lightBlue; margin-left: 520px; font-size: 3.2em; font-style: italic; font-family: Arial;">Bluebell</p>
-                    <input class="form-control" placeholder="Write your request..." style="max-width: 60%; border-color: blue; margin-left: 250px;"> 
+                    <p style="color: lightBlue; margin-left: 520px; font-size: 3.2em; font-style: italic; font-family: Georgia;">Bluebell</p>
+                    <input class="form-control" id="in" name="str" placeholder="Write your request..." style="max-width: 60%; border-color: blue; margin-left: 250px;"> 
                     </input>
-                    <button type="button" class="btn btn-info" style="min-width: 150px; margin-top: 20px; margin-left: 520px;">
+                    <button id="btn" type="button" name="search" class="btn btn-info" value="Click" style="min-width: 150px; margin-top: 20px; margin-left: 520px;">
                     Search
                     </button>
                 </div>
@@ -24,12 +44,17 @@
         <div class="container-fluid">
             <ul class="nav">
                 <li class="active"><a href="#">Home</a></li>
-                <li><a href="#">Settings</a></li>
-                <li><a href="#">To index URL</a></li>
-                <li><a href="#">URL's</a></li>
-                <li><a href="#">Change index</a></li>
+                <li><a href="index_url">To index URL</a></li>
+                <li><a href="urls">URL's</a></li>
+                <li><a href="change_index">Change index</a></li>
             </ul>
         </div>
     </nav>
+    <div class="container" style="margin-left: 150px;">
+    <table class="table table-hover" id="sheet">
+        <tbody> 
+        </tbody>
+    </table>
+    </div>
     </body>
 </html>

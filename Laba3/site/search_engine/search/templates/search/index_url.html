@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+    {% load staticfiles %}
+    <body style="background-image: url({% static "search/fon.jpg" %}); background-repeat: no-repeat; background-position: center top;"> 
+    <form role="form" action="#" method="url">
+        <div class="form-group">
+            <p style="color: lightBlue; margin-left: 320px; margin-top: 200px; font-size: 2.3em; font-style: italic; font-family: Georgia;">Please, write your url:</p>
+            <textarea name="get_text" class="form-control" style="border-color: blue; margin-left: 320px; max-width: 60%;">
+            </textarea> 
+            <button type="submit" name="add_url" class="btn btn-info" value="Click" style="margin-top: 10px; margin-left: 610px; min-width: 100px;">
+                Do
+            </button>
+        </div>
+    </form>
+    </body>
+</html>
