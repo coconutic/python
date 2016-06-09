@@ -5,8 +5,8 @@ from django.http import HttpResponse, JsonResponse
 
 
 def index_url(request):
-#    if (request.GET.url('add_url')):
- #       t = "r"
+    if (request.GET.url('add_url')):
+        t = request.GET.url('get_text')
     return render(request, 'search/index_url.html')
 
 def find_res(request):
