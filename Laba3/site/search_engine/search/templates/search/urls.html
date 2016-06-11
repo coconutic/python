@@ -4,6 +4,73 @@
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script>
+
+        function update_urls() 
+        {
+            $.ajax({
+                url: 'w_urls/', 
+                type: 'get',
+                data: {request: 'get_urls'},
+                success: function(response) {
+                    $('#sheet tr').remove()
+                    for (var i = 0; i < response.urls.length; i++){
+                        checkbox = '<td><input type="checkbox"/></td>'
+                        $('#sheet').find('tbody:last').append('<tr>' + checkbox + '<td><a href="'+response.urls[i]+'">'+response.urls[i]+'</a></td>' + '</tr>');
+                    }
+                }
+            })
+        }
+        
+        function get_durls()
+        {
+            var table = $('#sheet')
+            var rows = table.find('tr')
+            var l_urls = []
+
+            for(var i = 0; i < rows.length; i+=1){
+                var first_column = rows[i].childNodes[0] 
+                var second_column = rows[i].childNodes[1]
+                var input = first_column.childNodes[0]
+                var link = second_column.childNodes[0]
+
+                if (input.checked) 
+                {
+                    l_urls.push(link)
+                }
+            }
+            
+            return l_urls.toString()
+        }
+
+        
+        $(document).ready(function() {
+                $('#btn').click(function() {
+                    $.ajax({
+                        url: 'w_urls/', 
+                        type: 'get',
+                        data: {request: 'delete_urls', urls_to_delete: get_durls()},
+                        success: function(response) {
+                            update_urls()
+                            }
+                        })
+                })
+                update_urls()
+                });
+    </script>
 </head>
     {% load staticfiles %}
     <body style="background-image: url({% static "search/fon.jpg" %}); background-repeat: no-repeat; background-position: center top;"> 
+    <div class="container">
+        <form role="form">
+            <div class="form-group">
+                <button id="btn" type="button" name="do" class="btn btn-info" value="Click" style="margin-top: 340px;">Do It!</button>
+                <table id="sheet" style="margin-left: 170px; ">
+                    <tbody>
+                    </tbody>                    
+                </table>
+            </div>
+        </form>
+    </div>
+    </body>
+</html>

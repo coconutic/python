@@ -15,14 +15,14 @@ class Indexer(models.Model):
 
 class Count_in_file(models.Model):
     indexer = models.ForeignKey(Indexer, on_delete=models.CASCADE)
-    link_id = models.IntegerField()
+    link = models.CharField(max_length=300, default='')
     countWords = models.IntegerField()
 
     class Meta:
         app_label = 'search'
 
     def __str__(self):
-        return self.link_d
+        return self.link
     
     def __repr__(self):
-        return str((self.link_id, self.countWords))
+        return str((self.link, self.countWords))

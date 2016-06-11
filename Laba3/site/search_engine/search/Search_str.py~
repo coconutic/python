@@ -3,56 +3,50 @@ import base64
 import json
 from collections import OrderedDict
 
+import sys
+import django
+sys.path.append('/home/katrin/python/Laba3/site/search_engine/')
+os.environ['DJANGO_SETTINGS_MODULE']='search_engine.settings'
+django.setup()
+
+from search.models import Indexer
+from search.models import Count_in_file
+
 class Search(object):
     
     def __init__(self, s):
-        self.request = s
-        self.data = db.objects.all()
-        print '____________'
-        print db.objects.get(name='any')
-        print '_______________'
-        f = open('/home/katrin/python/Laba3/inverted_index')
-        self.inverted_index = json.loads(f.read())
+        s = s.split(" ")
+        self.request = []
+        for i in s:                 
+            try:
+                temp = Indexer.objects.get(name=str(i))
+                t = temp.count_in_file_set.all()
+                for j in t:
+                    self.request.append(j)
+            except:
+                continue
 
-    def clever_merge(self, a):
-        temp = []
-        for i in a:
-            for j in i.items():
-                temp.append(j)
+    def clever_merge(self):
         d = {}
-        for i in temp:
-            if i[0] in d:
-                d[i[0]] += i[1]
+        print self.request
+        for i in self.request:
+            if i.link in d.keys():
+                d[i.link] += i.countWords
             else:
-                d[i[0]] = i[1]
+                d[i.link] = i.countWords
         return  OrderedDict(reversed(sorted(d.items(), key=lambda x: x[1])))
 
     def start(self):
         ans = []
-        temp = []
-        self.request = self.request.split(" ")
-        for word in self.request:
-            try:
-                temp.append(self.inverted_index[word])
-            except Exception:
-                continue
-        d = self.clever_merge(temp)
-        list_files = os.listdir('/home/katrin/database')
+        d = self.clever_merge()
         for i in d.keys():
-            u = list_files[int(i) - 1]
-            ans.append(base64.b16decode(u))
+            ans.append(base64.b16decode(i))
         return ans
 
 
 def main():
-    w = Search('how to sort dict')
+    w = Search('to')
+    print w.start()
 
 if __name__ == "__main__":
-    import sys
-    import django
-    sys.path.append('/home/katrin/python/Laba3/site/search_engine/')
-    os.environ['DJANGO_SETTINGS_MODULE']='search_engine.settings'
-    django.setup()
-
-    from search.models import Indexer as db
     main()

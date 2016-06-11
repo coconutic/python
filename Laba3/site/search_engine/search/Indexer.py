@@ -2,8 +2,15 @@
 
 from collections import OrderedDict
 from django.db import transaction
-
 import os
+import sys
+import django
+sys.path.append('/home/katrin/python/Laba3/site/search_engine/')
+os.environ['DJANGO_SETTINGS_MODULE']='search_engine.settings'
+django.setup()
+
+from search.models import Indexer
+from search.models import Count_in_file
 import base64
 import json
 
@@ -33,7 +40,7 @@ class Inde(object):
     @transaction.atomic
     def add_group_files(self, listfiles):
         for f in listfiles:
-            index = Count_in_file(countWords=f[1], link_id=f[0])
+            index = Count_in_file(countWords=f[1], link=f[0])
             index.indexer = f[2]
             index.save()
 
@@ -66,7 +73,7 @@ class Inde(object):
         lw = []
         for k, v in text.iteritems():
             query_result = list(Indexer.objects.raw('SELECT * FROM search_indexer WHERE name=%s', [k]))
-            lw.append((self.count_doc, v, query_result[0]))
+            lw.append((filename, v, query_result[0]))
         self.add_group_files(lw)
 
 def start(directory_dir):
@@ -76,18 +83,9 @@ def start(directory_dir):
         parse_text = f.read()
         parse_text = indexer.check(parse_text)
         indexer.add_doc(parse_text.split(" "), i)
-    indexer.store()
 
 def main():
     start('/home/katrin/database')
 
 if __name__ == "__main__":
-    import sys
-    import django
-    sys.path.append('/home/katrin/python/Laba3/site/search_engine/')
-    os.environ['DJANGO_SETTINGS_MODULE']='search_engine.settings'
-    django.setup()
-
-    from search.models import Indexer
-    from search.models import Count_in_file
     main()
