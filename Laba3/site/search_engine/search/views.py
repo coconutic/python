@@ -3,9 +3,10 @@ import os
 import django
 import Search_str
 import Crawler
-import Indexer
+import Indexer as d
 import json
 import base64
+
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 
@@ -15,6 +16,10 @@ django.setup()
 
 from search.models import Indexer
 from search.models import Count_in_file
+from search.models import URL
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 def to_url(request):
     s = request.GET.get('text')
@@ -29,10 +34,11 @@ def to_url(request):
     except Exception, e:
         pass
     try:
-        Indexer.start('/home/katrin/databasetemp/')
+        d.start('/home/katrin/databasetemp/')
     except Exception, e:
         print e
     return HttpResponse('Done it')
+
 
 def index_url(request):
     return render(request, 'search/index_url.html')
@@ -55,7 +61,7 @@ def get_urls():
 def w_urls(request):
     request_type = request.GET.get('request')
     print request_type
-
+    
     if request_type == 'get_urls':
         return get_urls()
     elif request_type == 'delete_urls':
@@ -71,6 +77,27 @@ def delete_urls(s):
 
 
 def change_index(request):
+    ans = URL.objects.all()
+    cur_page = []
+    for i in ans:
+        cur_page.append((str(i.link), str(i.description)))
+    if request.GET.get('request') == 'page':
+        num_page = int(request.GET.get('num'))
+        return HttpResponse(json.dumps({'urls': cur_page[5 * (num_page - 1): num_page * 5]}), content_type="application/json")
+    elif request.GET.get('request') == 'save':
+        print "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        name = base64.b16encode(request.GET.get('url'))
+        f = open('/home/katrin/databasetemp/'+name, "w")
+        f.write(request.GET.get('txt'))
+
+        try:
+            d.start('/home/katrin/databasetemp/')
+        except Exception, e:
+            print e
+        URL.objects.filter(link=request.GET.get('url')).delete()
+        new_link = URL(link=request.GET.get('url'), description=request.GET.get('txt'))
+        new_link.save()
+        return  HttpResponse(json.dumps('ok'), content_type="application/json")
     return render(request, 'search/change_index.html')
 
 def search(request):

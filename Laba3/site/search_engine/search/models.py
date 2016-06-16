@@ -26,3 +26,12 @@ class Count_in_file(models.Model):
     
     def __repr__(self):
         return str((self.link, self.countWords))
+
+class URL(models.Model):
+    link = models.CharField(max_length=300)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.link
+
+
