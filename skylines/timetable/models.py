@@ -4,24 +4,31 @@ from django.db import models
 
 
 class User(models.Model):
-    id = models.IntegerField()
     login = models.CharField(max_length = 10)
     password = models.CharField(max_length = 20)
     access_level = models.IntegerField()
 
 
-
 class Airplane(models.Model):
-    id = models.IntegerField()
     cost = models.IntegerField()
     seats = models.IntegerField()
+    free_seats = models.IntegerField()
 
 
 class Airport(models.Model):
-    id = models.IntegerFiled()
     name = models.CharField(max_length = 10)
     country = models.CharField(max_length = 10)
 
-class TimeTable(models.Model):
-    id_plane =  
-# Create your models here.
+
+class Timetable(models.Model):
+    plane = models.ForeignKey(Airplane, on_delete=models.CASCADE)
+    departure_time = models.CharField(max_length = 10)
+    arrival_time = models.CharField(max_length = 10)
+    departure_date = models.CharField(max_length = 15)
+    arrival_date = models.CharField(max_length = 15)
+    place_from = models.ForeignKey(Airport, related_name = 'departure_airport', on_delete=models.CASCADE)
+    place_to = models.ForeignKey(Airport, related_name = 'arrival_airport', on_delete = models.CASCADE)
+
+class History(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    flight = models.ForeignKey(Timetable, on_delete=models.CASCADE) 
