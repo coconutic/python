@@ -5,5 +5,5 @@ def shedule(request):
     return HttpResponse('do')
 
 def main(request):
-    return render(request, 'timetable/temp.html')
+    return render(request, 'temp.html')
 # Create your views here.

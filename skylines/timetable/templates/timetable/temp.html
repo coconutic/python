@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    </head>
+    {% load staticfiles %}
+    <body style="background-image: url({% static "timetable/fon.jpg" %}); background-repeat: no-repeat;
+                                     background-position: center top;">
+        <div class="center-block" style="margin-top: 10px;">
+            <div class="container">
+                <form role="form" action="#" method="get">
+                    <div class="form-group">
+                        <button id="btn_sing_in" type="button" name="sing_in" class="btn btn-info"
+                                     value="Click" style="min-width: 150px; margin-top: 20px;
+                                     margin-left: 990px;">
+                            Sing in
+                        </button>
+                        <p style="color:#7A95ED; margin-left: 520px; font-size: 3.2em;
+                                     font-style: italic; font-family: Georgia;">
+                            Skylines
+                        </p>
+                        <input class="form-control" id="input_from" name="str_from" placeholder="From"
+                                     style="max-width: 20%; border-color: blue; margin-left: 350px;"> 
+                        </input>
+                        <input class="form-control" id="input_to" name="str_to" placeholder="To"
+                                     style="max-width: 20%; margin-top: -34px;  border-color: blue; margin-left: 600px;">
+                        </input>
+                         <button id="btn_search" type="button" name="search" class="btn btn-info"
+                                     value="Click" style="min-width: 150px; margin-top: 20px;
+                                     margin-left: 520px;">
+                            Search
+                        </button>
+                        <table class="table table-hover" id="sheet" style="margin-top: 20px;">
+                            <tbody>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Departure</th>
+                                    <th>Arrival</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Free seats</th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div> 
+    </body>
+</html>
