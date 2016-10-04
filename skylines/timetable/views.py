@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from forms import UserLogInForm, UserSignInForm
+from . import db_manager
+
+
+
 
 def shedule(request):
     return HttpResponse('do')
@@ -21,6 +25,7 @@ def sign_in(request):
         form = UserSignInForm(request.POST)
 
         if (form.is_valid()):
+            register_user(form)
             return redirect('/timetable/main')
     else:
         form = UserSignInForm()
@@ -32,4 +37,3 @@ def main(request):
     request_type = request.GET.get('sing_in')
     print request_type
     return render(request, 'timetable/temp.html')
-# Create your views here.

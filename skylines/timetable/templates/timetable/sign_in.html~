@@ -6,17 +6,34 @@
     {% load staticfiles %}
     <body style="background-image: url({% static "timetable/fon.jpg" %}); background-repeat: no-repeat;
         background-position: center top;">
-        <div class="center-block" style="margin-top: 15%; max-width: 30%;
-             border-radius: 5px; min-height: 300px;
+        <div class="center-block" style="margin-top: 10%; max-width: 30%;
+             border-radius: 5px; min-height: 350px;
              background-color: rgba(200, 200, 200, 0.4);"
             <form action="" method="post">
                 {% csrf_token %}
-                <div class="center-block" style="padding-top: 10%; padding-left: 20%;">
+                <div class="center-block" style="padding-top: 5%; padding-left: 15%;">
                     <p style="color: #7A95ED; margin-left: 30px; font-size: 1.2e.m;
                        font-family: Georgia;">
-                       User name
+                       User name:
                     </p>
                     {{form.username}}
+                    <p style="color: #7A95ED; margin-left: 30px; font-size: 1.2e.m;
+                       font-family: Georgia;">
+                       Email:
+                    </p>
+                    {{form.email}}
+                    <p style="color: #7A95ED; margin-left: 30px; font-size: 1.2e.m;
+                       font-family: Georgia;">
+                       Password:
+                    </p>
+                    {{form.password}}
+                    <p style="color: #7A95ED; margin-left: 30px; font-size: 1.2e.m;
+                       font-family: Georgia;">
+                       Confirmation:
+                    </p>
+                    {{form.confirmation}}
+                    <input type="submit" value="Register" style="margin-left: 30px;
+                           min-width: 200px; margin-top: 15px" class="btn btn-info"/>
                 </div>
         </form>
     </body>
