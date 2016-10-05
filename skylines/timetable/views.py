@@ -25,7 +25,7 @@ def sign_in(request):
         form = UserSignInForm(request.POST)
 
         if (form.is_valid()):
-            register_user(form)
+            db_manager.add_user(form['username'].value(), form['email'].value(), form['password'].value())
             return redirect('/timetable/main')
     else:
         form = UserSignInForm()
