@@ -53,7 +53,7 @@ def check_user(email, password):
 def add_airplane(cost, seats, free_seats):
     conn = sqlite3.connect('/Users/ekaterinakurach/python/skylines/db.sqlite3')
     cursor = conn.cursor()
-    sql_string = "INSERT INTO timetable_user (cost, seats, free_seats) \
+    sql_string = "INSERT INTO timetable_airplane (cost, seats, free_seats) \
                                                 VALUES (?,?,?)"
     cursor.execute(sql_string, (cost, seats, free_seats))
     conn.commit()
