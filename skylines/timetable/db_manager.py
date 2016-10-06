@@ -24,6 +24,29 @@ def remove_user(email):
     conn.commit()
     conn.close()
 
+def get_list_users():
+    sql_str = "SELECT * FROM timetable_user"
+    conn = sqlite3.connect('/Users/ekaterinakurach/python/skylines/db.sqlite3')
+    cursor = conn.cursor()
+    cursor = conn.execute(sql_str)
+    temp = cursor.fetchall()
+    conn.commit()
+    conn.close()
+    return temp
+
+def check_user(email, password):
+    sql_str = "SELECT * FROM timetable_user WHERE email = ? and password = ?"
+    conn = sqlite3.connect('/Users/ekaterinakurach/python/skylines/db.sqlite3')
+    cursor = conn.cursor()
+    cursor = conn.execute(sql_str, (email, password))
+    if (len(cursor.fetchall()) == 0):
+        isIn = False
+    else:
+        isIn = True
+    conn.commit()
+    conn.close()
+    return isIn
+
 
 #_____________TABLE AIRPLANE________________
 
@@ -44,6 +67,16 @@ def remove_plane(cost, seats, free_seats):
     conn.commit()
     conn.close()
 
+
+def get_list_airplanes():
+    sql_str = "SELECT * FROM timetable_airplane"
+    conn = sqlite3.connect('/Users/ekaterinakurach/python/skylines/db.sqlite3')
+    cursor = conn.cursor()
+    cursor = conn.execute(sql_str)
+    temp = cursor.fetchall()
+    conn.commit()
+    conn.close()
+    return temp
 
 #_____________TABLE AIRPORT_____________
 

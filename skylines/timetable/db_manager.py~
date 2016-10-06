@@ -24,6 +24,29 @@ def remove_user(email):
     conn.commit()
     conn.close()
 
+def get_list_users():
+    sql_str = "SELECT * FROM timetable_user"
+    conn = sqlite3.connect('/Users/ekaterinakurach/python/skylines/db.sqlite3')
+    cursor = conn.cursor()
+    cursor = conn.execute(sql_str)
+    temp = cursor.fetchall()
+    conn.commit()
+    conn.close()
+    return temp
+
+def check_user(email, password):
+    sql_str = "SELECT * FROM timetable_user WHERE email = ? and password = ?"
+    conn = sqlite3.connect('/Users/ekaterinakurach/python/skylines/db.sqlite3')
+    cursor = conn.cursor()
+    cursor = conn.execute(sql_str, (email, password))
+    if (len(cursor.fetchall()) == 0):
+        isIn = False
+    else:
+        isIn = True
+    conn.commit()
+    conn.close()
+    return isIn
+
 
 #_____________TABLE AIRPLANE________________
 
@@ -33,6 +56,14 @@ def add_airplane(cost, seats, free_seats):
     sql_string = "INSERT INTO timetable_user (cost, seats, free_seats) \
                                                 VALUES (?,?,?)"
     cursor.execute(sql_string, (cost, seats, free_seats))
+    conn.commit()
+    conn.close()
+
+def remove_plane(cost, seats, free_seats):
+    sql_str = "DELETE FROM timetable_airplane WHERE cost = ? and seats = ? and free_seats = ?"
+    conn = sqlite3.connect('/Users/ekaterinakurach/python/skylines/db.sqlite3')
+    cursor = conn.cursor()
+    cursor = conn.execute(sql_str, (cost, seats, free_seats))
     conn.commit()
     conn.close()
 
@@ -52,6 +83,14 @@ def add_airport(airport_name, country):
     conn.close()
 
 
+def remove_airport(airport_name, country):
+    sql_str = "DELETE FROM timetable_airport WHERE airport_name = ? and country = ?"
+    conn = sqlite3.connect('/Users/ekaterinakurach/python/skylines/db.sqlite3')
+    cursor = conn.cursor()
+    cursor = conn.execute(sql_str, (airport_name, country))
+    conn.commit()
+    conn.close()
+
 
 #_____________TABLE TIMETABLE______________
 
@@ -65,6 +104,15 @@ def add_timetable(plane, dep_time, arr_time, place_from, place_to, dep_date, arr
         sql_string = "INSERT INTO timetable_timetable (plane, departure_time, arrivale_time, departure_date,  \
                       arrival_date, place_from, place_to) VALUES (?,?,?,?,?,?,?)"
         cursor.execute(sql_string, (plane, dep_time, arr_time, dep_date, arr_date, place_from, place_to))
+    conn.commit()
+    conn.close()
+
+def remove_timetable(plane, dep_time, arr_time, place_from, place_to, dep_date, arr_date):
+    sql_str = "DELETE FROM timetable_user WHERE  plane = ? and departure_time = ? and arrival_time = ? \
+                    departure_date = ? and arrival_date = ? and place_from = ? and place_to = ?"
+    conn = sqlite3.connect('/Users/ekaterinakurach/python/skylines/db.sqlite3')
+    cursor = conn.cursor()
+    cursor = conn.execute(sql_str, (plane, dep_time, arr_time, dep_date, arr_date, place_from, place_to))
     conn.commit()
     conn.close()
 
@@ -82,5 +130,3 @@ def add_history(user, flight):
         cursor.execute(sql_string, (user, flight))
     conn.commit()
     conn.close()
-
-
