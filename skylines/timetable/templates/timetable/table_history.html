@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    </head>
+    {% load staticfiles %}
+    <body style="background-image: url({% static "timetable/fon.jpg" %}); background-repeat: no-repeat;
+                                   background-position: center top;"> 
+        <div class="center-block" style="margin-top:  80px;">
+            <p style="color: #7A95ED; margin-left: 520px; font-size: 3.2em;">History</p>
+            <table class="table table-hover" id="planes_table" style="margin-top: 20px;">
+                <tbody>
+                    <tr>
+                        <th>Plane cost</th>
+                        <th>Departure time</th>
+                        <th>Arrival time</th>
+                        <th>Departure date</th>
+                        <th>Arrival date</th>
+                        <th>From</th>
+                        <th>To</th>
+                    </tr>
+                    {%if history_list%}
+                    {%for note in history_list%}
+                        <tr>
+                            <td>
+                                <p>{{note.1}}</p>
+                            </td>
+                            <td>
+                                <p>{{note.2}}</p>
+                            </td>
+                            <td>
+                                <p>{{note.3}}</p>
+                            </td>
+                            <td>
+                                <p>{{note.4}}</p>
+                            </td>
+                            <td>
+                                <p>{{note.5}}</p>
+                            </td>
+                            <td>
+                                <p>{{note.6}}</p>
+                            </td>
+                            <td>
+                                <p>{{note.7}}</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

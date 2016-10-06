@@ -4,6 +4,8 @@ from forms import UserLogInForm, UserSignInForm
 from . import db_manager
 import json
 
+cur_email = 'kattekurach@gmail.com'
+
 
 def shedule(request):
     return HttpResponse('do')
@@ -14,6 +16,7 @@ def log_in(request):
         form = UserLogInForm(request.POST)
         if (form.is_valid()):
             if (db_manager.check_user(form['email'].value(), form['password'].value())):
+                cur_email = form['email'].value()
                 return redirect('/timetable/main')
             else:
                 return redirect('/timetable/main/sign_in')
@@ -48,20 +51,40 @@ def see_users(request):
 
 
 def see_planes(request):
-    if (request.GET.get('add')):
-        print "rere"
-        new_cost = request.GET.get('cost')
-        new_seats = request.GET.get('seats')
-        db_manager.add_airplane(new_cost, new_seats, new_seats)
     if request.method == 'GET':
         request_type = request.GET.get('request_type')
-        if (request_type == "delete_planes"):
-            array_of_planes = json.loads(request.GET.get('plane_costs'))
+        if request_type == "delete_planes":
+            plane_cost = request.GET.get('plane_cost')            
+            array_of_planes = json.loads(request.GET.get('plane_cost'))
+
             for plane in array_of_planes:
-                db_manager.remove_plane(plane, 200, 200)
+                print plane[0], plane[1], plane[2]
+                print type(plane[0]), type(plane[1]), type(plane[2])
+                db_manager.remove_plane(plane[0], plane[1], plane[2])
+
+            return HttpResponse('success')
+        elif request_type == 'add_plane':
+            cost = request.GET.get('plane_cost')
+            seats = request.GET.get('plane_seats')
+            
+            try:
+                cost = int(cost)
+                seats = int(seats)
+            except:
+                return HttpResponse('Cost and seats should be integer type.')
+
+            db_manager.add_airplane(cost, seats, seats)
+            return HttpResponse('success')
+
     list_planes = db_manager.get_list_airplanes()
     context = {'planes_list' : list_planes}
     return render(request, 'timetable/table_planes.html', context)
+
+
+def see_history(request):
+    list_history = db_manager.get_list_history(cur_email)
+    context = {'history_list' : list_history}
+    return render(request, 'timetable/table_history.html', context)
 
 
 def main(request):

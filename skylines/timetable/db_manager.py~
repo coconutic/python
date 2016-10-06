@@ -140,3 +140,15 @@ def add_history(user, flight):
         cursor.execute(sql_string, (user, flight))
     conn.commit()
     conn.close()
+
+def get_list_history(user):
+    sql_str = "SELECT * FROM timetable_history WHERE user = ?"
+    conn = sqlite3.connect('/Users/ekaterinakurach/python/skylines/db.sqlite3')
+    cursor = conn.cursor()
+    cursor = conn.execute(sql_str, (user, ))
+    temp = cursor.fetchall()
+    conn.commit()
+    conn.close()
+    return temp
+
+

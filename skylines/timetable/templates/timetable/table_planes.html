@@ -14,9 +14,22 @@
                     if (checkbox != null && 
                         checkbox.checked) {
                         var cost_id = "cost_" + i;
+                        var seats_id = "seats_" + i;
+                        var free_seats_id = "free_seats_" + i;
+
                         var cost = $("#" + cost_id)[0]; 
-                        if (cost != null) {
-                            result.push(cost.innerHTML);
+                        var seats = $("#" + seats_id)[0];
+                        var free_seats = $('#' + free_seats_id)[0];
+                        console.log(cost, seats, free_seats);
+                        if (cost != null && seats != null && free_seats != null) {
+                            // when everything good delete slice TODO
+                            cost = cost.innerHTML;
+                            seats = seats.innerHTML;
+                            free_seats = free_seats.innerHTML;
+
+                            result.push([parseInt(cost, 10),
+                                         parseInt(seats, 10),
+                                         parseInt(free_seats, 10)]);
                         }
                     }
                 }
@@ -40,23 +53,76 @@
                     }
                 } 
             }
+
+            function collect_new_plane_data() {
+                var cost = $('#new_plane_cost')[0].value;
+                var seats = $('#new_plane_seats')[0].value;
+
+                return [cost, seats];
+            }
+
+
+            function add_new_plane(plane_data) 
+            {
+                var id = $('#planes_table tr').lenght;
+                var checkbox = '<td><input type="checkbox" value="" id="checkbox_' + id + '" /></td>'
+                var plane_cost = plane_data[0];
+                var cost_cell = '<td><p id = "cost_' + id + '">' + plane_cost + '</p></td>';
+                var plane_seats = plane_data[1];
+                var seats_cell = '<td><p id = "seats_' + id + '">' + plane_seats + '</p></td>';
+                var free_seats = plane_data[1];
+                var free_seats_cell = '<td><p id = "free_seats_' + id + '">' + free_seats + '</p></td>';
+
+                var row = '<tr>' + checkbox + cost_cell + seats_cell + free_seats_cell + '</tr>';
+                $('#planes_table tr:last').after(row);
+            }
+
         
 
             $(document).ready(function() {
                 $("#delete_btn").click(function() {
-                    var plane_costs_ = collect_selected_items();
-                    var json_plane_costs_ = JSON.stringify(plane_costs_);
+                    var plane_cost_ = collect_selected_items();
+                    var plane_cost_json = JSON.stringify(plane_cost_);
                     $.ajax({
                         url: '',
                         type: 'get',
                         data: {request_type: "delete_planes",
-                               plane_costs: json_plane_costs_},
+                               plane_cost: plane_cost_json},
                         success: function(response) {
                             if (response == 'success') {
-                                delete_checked_planes(plane_costs_);
+                                delete_checked_planes(plane_cost_);
+                            } else 
+                            {
+                                alert(response);
                             }
+
                         } 
                     });
+                });
+
+                $("#btn_add").click(function() 
+                {
+                    var plane_data = collect_new_plane_data();
+                    var plane_cost_ = plane_data[0];
+                    var plane_seats_ = plane_data[1];
+
+                    $.ajax({
+                        url: '',
+                        type: 'get',
+                        data: {request_type: "add_plane",
+                               plane_cost: plane_cost_,
+                               plane_seats: plane_seats_},
+                        success: function(response) {
+                            if (response == 'success') {
+                                add_new_plane(plane_data);
+                            } else 
+                            {
+                                alert(response);
+                            }
+
+                        } 
+                    });
+
                 });
             });
 
@@ -67,15 +133,14 @@
                                    background-position: center top;"> 
         <div class="center-block" style="margin-top:  80px;">
             <input type="input" name="cost" class="form-control" placeholder="Cost"
-                   style="width: 200px; height: 30px; border-color: blue;"/>
+                   style="width: 200px; height: 30px; border-color: blue;" id="new_plane_cost"/>
             <input type="input" name="seats" class="form-control" placeholder="Seats" 
-                   style="width: 200px; height: 30px; border-color: blue; margin-top: 20px;"/>
+                   style="width: 200px; height: 30px; border-color: blue; margin-top: 20px;"
+                   id="new_plane_seats"/>
             <input type = "button" id = "delete_btn" value="Delete" class="btn btn-info"
                    style="width: 90px; margin-top: 20px;"/>
-            <form role="form" action="#" method="get">
-                <button name = "add" type="button" id = "btn" value="Click" class="btn btn-info"
-                        style="width: 90px; margin-left: 170px; margin-top: -120px;">Add</button>
-            </form>
+            <input name = "add" type="button" id = "btn_add" value="Add" class="btn btn-info"
+                style="width: 90px; margin-left: 170px; margin-top: -120px;" />
             <table class="table table-hover" id="planes_table" style="margin-top: 20px;">
                 <tbody>
                     <tr>

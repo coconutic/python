@@ -8,5 +8,6 @@ urlpatterns = [
     url(r'^main/sign_in/', views.sign_in, name='sign_in'),
     url(r'^main/users/', views.see_users, name='see_users'),
     url(r'^main/planes/', views.see_planes, name='see_planes'),
+    url(r'^main/history/', views.see_history, name='see_history'),
     url(r'^$', views.shedule, name='shedule'),
 ]

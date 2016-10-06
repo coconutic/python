@@ -1,0 +1,2 @@
+                var cost = $('#new_plane_cost')[0].innerHTML;
+                var seats = $('#new_plane_seats')[0].innerHTML;
