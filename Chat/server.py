@@ -5,27 +5,18 @@ def create_socket():
     
     
 def main():
+    all_clients = set()
     server = create_socket()
     host = '' 
     port = 30000
     server.bind((host, port))
     while True:
-        all_clients = []
-        server.listen(2)
-        db = []
-        for i in xrange(2):
-            new_connection, address = server.accept()
-            all_clients.append(new_connection)
-            data = new_connection.recv(4096)
-            if not data:
-                continue
-            db.append(data)
-        for i in db:
-            all_clients[0].sendall(i)
-            all_clients[1].sendall(i)
-        for i in all_clients:
-            i.close()
-
+        data = server.recvfrom(4064)
+        cur_address = data[1][1]
+        for client in all_clients:
+            if cur_address != client[1]:
+                server.sendto(data[0], client)
+        all_clients.add(data[1])
 
 if __name__ == '__main__':
     main()
