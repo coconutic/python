@@ -6,9 +6,10 @@ def create_socket():
     
 def main():
     all_clients = set()
-    server = create_socket()
     host = '' 
     port = 30000
+    
+    server = create_socket()
     server.bind((host, port))
     while True:
         data = server.recvfrom(4064)

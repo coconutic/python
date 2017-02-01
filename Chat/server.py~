@@ -6,12 +6,13 @@ def create_socket():
     
 def main():
     all_clients = set()
-    server = create_socket()
     host = '' 
     port = 30000
+    
+    server = create_socket()
     server.bind((host, port))
     while True:
-        data = server.recvfrom(65536)
+        data = server.recvfrom(4064)
         cur_address = data[1][1]
         for client in all_clients:
             if cur_address != client[1]:
