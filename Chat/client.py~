@@ -18,6 +18,9 @@ def check_input(s):
 def get_message(sock):
     while True:
         message = sock.recvfrom(4064)[0]
+        CURSOR_UP_ONE = '\x1b[1A'
+        ERASE_LINE = '\x1b[2K'
+        print CURSOR_UP_ONE + ERASE_LINE + CURSOR_UP_ONE
         print message
 
 def print_message(s):
