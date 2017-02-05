@@ -7,7 +7,7 @@ operation = ''
 
 mod = 65537
 ones25 = 0b1111111111111111111111111
-ones64 = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+ones64 = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 
 def generate_keys(key):
     keys = []
@@ -24,31 +24,48 @@ def generate_keys(key):
 
 def binPow(a, n):
     r = 1
-    while n:        
-        if n & 1: 
+    while n:
+        if n & 1:
             r = (r * a) % mod
         n >>= 1
-        a = (a * a) % mod                                                          
+        a = (a * a) % mod
     return int(r)
 
 
-def multi(k):
-    return binPow(k, mod - 2)    
+def multi(x):
+    if x <= 1:
+	return x
+    y = 0x10001;
+    t0 = 1;
+    t1 = 0;
+    while True:
+	t1 += y / x * t0;
+	y %= x;
+	if y == 1:
+	    return 0x10001 - t1
 
+	t0 += x / y * t1;
+	x %= y;
+
+	if x == 1:
+	    return t0
+
+
+def addInv(x):
+    return (0x10000 - x) & 0xFFFF;
 
 def generate_rev_keys():
-    t = 2 ** 16
-    dec_keys.append([multi(enc_keys[8][0]), 
-                    t - enc_keys[8][1], t - enc_keys[8][2],
+    dec_keys.append([multi(enc_keys[8][0]),
+                    addInv(enc_keys[8][1]), addInv(enc_keys[8][2]),
                     multi(enc_keys[8][3]),
                     enc_keys[7][4], enc_keys[7][5]])
     for i in xrange(7, 0, -1):
         dec_keys.append([multi(enc_keys[i][0]),
-                        t - enc_keys[i][2], t - enc_keys[i][1],
+                        addInv(enc_keys[i][2]), addInv(enc_keys[i][1]),
                         multi(enc_keys[i][3]),
                         enc_keys[i - 1][4], enc_keys[i - 1][5]])
-    dec_keys.append([multi(enc_keys[0][0]), 
-                     t - enc_keys[0][1], t - enc_keys[0][2],
+    dec_keys.append([multi(enc_keys[0][0]),
+                     addInv(enc_keys[0][1]), addInv(enc_keys[0][2]),
                      multi(enc_keys[0][3])])
 
 
@@ -62,12 +79,15 @@ def div_block(b):
 
 
 def m(a, b):
-    return ((a * b) % (2 ** 16 + 1)) & 0xFFFF
+    result = a * b
+    if result != 0:
+        return (result % 0x10001) & 0xFFFF
+    else:
+        return (1 - a - b) & 0xFFFF
 
 
 def p(a, b):
-    t = 2 ** 16
-    return (a + b) % t
+    return (a + b) & 0xFFFF
 
 
 def get_symbols(d):
@@ -86,15 +106,15 @@ def convert(b):
     for i in xrange(8):
         a = m(d[0], enc_keys[i][0])
         b = p(d[1], enc_keys[i][1])
-        c = p(d[2], enc_keys[i][2]) 
-        dk = m(d[3], enc_keys[i][3]) 
+        c = p(d[2], enc_keys[i][2])
+        dk = m(d[3], enc_keys[i][3])
         e = a ^ c
         f = b ^ dk
-        t1 = m(p(f, m(e, enc_keys[i][4])), enc_keys[i][5]) 
+        t1 = m(p(f, m(e, enc_keys[i][4])), enc_keys[i][5])
         d[0] = a ^ t1
         d[1] = c ^ t1
         t2 = p(m(e, enc_keys[i][4]), m(p(f, m(e, enc_keys[i][4])), enc_keys[i][5]))
-        d[2] = b ^ t2      
+        d[2] = b ^ t2
         d[3] = dk ^ t2
     d[0] = m(d[0], enc_keys[8][0])
     temp = d[1]
@@ -107,7 +127,7 @@ def convert(b):
 def encodeIDEA():
     fr = open(inputFile, 'r')
     fw = open(outputFile, 'w')
-       
+
     flag = True
     while flag:
         count = 0
@@ -125,7 +145,7 @@ def encodeIDEA():
                 chunk = (chunk << 8) + ord(new_symbol)
         if count == 0:
             break
-   
+
         for i in convert(chunk):
             fw.write(chr(i))
     fr.close()
@@ -140,16 +160,15 @@ def main():
     operation = raw_input('Write descrypt or encrypt file, please: ')
     inputFile = raw_input('Write input file name :')
     outputFile = raw_input('Write output file name: ')
-    
+
     key = long(raw_input())
-    #key = 5192455318486707404433266433261576L
     generate_keys(key)
     if operation == 'encrypt':
         encodeIDEA()
     else:
         global enc_keys
-        global dec_keys 
-    
+        global dec_keys
+
         generate_rev_keys()
         enc_keys = dec_keys[:]
         encodeIDEA()
